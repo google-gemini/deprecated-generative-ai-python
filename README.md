@@ -7,3 +7,10 @@ The full migration guide from the old SDK to new SDK is available in the [Gemini
 We won't be adding anything to this SDK or making any further changes. The Gemini API docs are fully updated to show examples of the new Google Gen AI SDK. We know how disruptive an SDK change can be and don't take this change lightly, but our goal is to create an extremely simple and clear path for developers to build with our models so it felt necessary to make this change.
 
 Thank you for building with Gemini and [let us know](https://discuss.ai.google.dev/c/gemini-api/4) if you need any help!
+
+<!-- 
+[START update]
+# With Gemini 2 we're launching a new SDK. See the following doc for details.
+# https://ai.google.dev/gemini-api/docs/migrate
+[END update]
+ -->
