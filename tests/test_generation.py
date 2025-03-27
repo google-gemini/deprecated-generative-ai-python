@@ -697,8 +697,10 @@ class UnitTests(parameterized.TestCase):
                             month=protos.Schema(type="INTEGER"),
                             year=protos.Schema(type="INTEGER"),
                         ),
+                        required=["day", "month", "year"],
                     ),
                 ),
+                required=["name", "favorite_color", "birthday"],
             ),
         ],
     )
