@@ -10,6 +10,7 @@ from typing import Any, cast
 from collections.abc import Sequence
 import httplib2
 from io import IOBase
+import sys
 
 import google.ai.generativelanguage as glm
 import google.generativeai.protos as protos
@@ -153,6 +154,10 @@ class _ClientManager:
         client_options: client_options_lib.ClientOptions | dict[str, Any] | None = None,
         client_info: gapic_v1.client_info.ClientInfo | None = None,
         default_metadata: Sequence[tuple[str, str]] = (),
+        http_proxy: str | None = None,
+        https_proxy: str | None = None,
+        no_proxy: str | None = None,
+        grpc_proxy: str | None = None
     ) -> None:
         """Initializes default client configurations using specified parameters or environment variables.
 
@@ -171,6 +176,14 @@ class _ClientManager:
                 are set, they will be used in this order of priority.
             default_metadata: Default (key, value) metadata pairs to send with every request.
                 when using `transport="rest"` these are sent as HTTP headers.
+            http_proxy: HTTP proxy URL (e.g., 'http://127.0.0.1:8080').
+                If provided, sets the 'http_proxy' environment variable.
+            https_proxy: HTTPS proxy URL (e.g., 'http://127.0.0.1:8080'). 
+                If provided, sets the 'https_proxy' environment variable.
+            no_proxy: Comma-separated list of hosts to exclude from proxy.
+                If provided, sets the 'no_proxy' environment variable.
+            grpc_proxy: gRPC proxy URL (e.g., 'http://127.0.0.1:8080'). 
+                If provided, sets the 'grpc_proxy' environment variable.
         """
         if isinstance(client_options, dict):
             client_options = client_options_lib.from_dict(client_options)
@@ -220,6 +233,33 @@ class _ClientManager:
         self.default_metadata = default_metadata
 
         self.clients = {}
+
+        if http_proxy:
+            os.environ['http_proxy'] = http_proxy
+            os.environ['HTTP_PROXY'] = http_proxy
+        
+        if https_proxy:
+            os.environ['https_proxy'] = https_proxy
+            os.environ['HTTPS_PROXY'] = https_proxy
+        
+        if no_proxy:
+            os.environ['no_proxy'] = no_proxy
+            os.environ['NO_PROXY'] = no_proxy
+        
+        if grpc_proxy:
+            os.environ['grpc_proxy'] = grpc_proxy
+
+        if 'requests' in sys.modules:
+            import requests
+            # Create a new session and configure proxies
+            session = requests.Session()
+            if http_proxy or https_proxy:
+                session.proxies.update({
+                    'http': http_proxy,
+                    'https': https_proxy
+                })
+            # Patch the Session class to return our configured session
+            requests.Session = lambda: session
 
     def make_client(self, name):
         if name == "file":
@@ -312,6 +352,10 @@ def configure(
     client_options: client_options_lib.ClientOptions | dict | None = None,
     client_info: gapic_v1.client_info.ClientInfo | None = None,
     default_metadata: Sequence[tuple[str, str]] = (),
+    http_proxy: str | None = None,
+    https_proxy: str | None = None,
+    no_proxy: str | None = None,
+    grpc_proxy: str | None = None
 ):
     """Captures default client configuration.
 
@@ -329,7 +373,38 @@ def configure(
             used.
         default_metadata: Default (key, value) metadata pairs to send with every request.
             when using `transport="rest"` these are sent as HTTP headers.
+        http_proxy: HTTP proxy URL (e.g., 'http://127.0.0.1:8080').
+            If provided, sets the 'http_proxy' environment variable.
+        https_proxy: HTTPS proxy URL (e.g., 'http://127.0.0.1:8080'). 
+            If provided, sets the 'https_proxy' environment variable.
+        no_proxy: Comma-separated list of hosts to exclude from proxy.
+            If provided, sets the 'no_proxy' environment variable.
+        grpc_proxy: gRPC proxy URL (e.g., 'http://127.0.0.1:8080'). 
+            If provided, sets the 'grpc_proxy' environment variable.
     """
+    if http_proxy:
+        os.environ['http_proxy'] = http_proxy
+        os.environ['HTTP_PROXY'] = http_proxy
+    if https_proxy:
+        os.environ['https_proxy'] = https_proxy
+        os.environ['HTTPS_PROXY'] = https_proxy
+    if no_proxy:
+        os.environ['no_proxy'] = no_proxy
+        os.environ['NO_PROXY'] = no_proxy
+    
+    if grpc_proxy:
+        os.environ['grpc_proxy'] = grpc_proxy
+    
+    if 'requests' in sys.modules:
+        import requests
+        session = requests.Session()
+        if http_proxy or https_proxy:
+            session.proxies.update({
+                'http': http_proxy,
+                'https': https_proxy
+            })
+        requests.Session = lambda: session
+
     return _client_manager.configure(
         api_key=api_key,
         credentials=credentials,
@@ -337,6 +412,10 @@ def configure(
         client_options=client_options,
         client_info=client_info,
         default_metadata=default_metadata,
+        http_proxy=http_proxy,
+        https_proxy=https_proxy,
+        no_proxy=no_proxy,
+        grpc_proxy=grpc_proxy
     )
 
 
