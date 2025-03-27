@@ -81,6 +81,8 @@ _MODE: dict[ModeOptions, Mode] = {
     0: Mode.MODE_UNSPECIFIED,
     "mode_unspecified": Mode.MODE_UNSPECIFIED,
     "unspecified": Mode.MODE_UNSPECIFIED,
+    "mode_always": Mode.MODE_UNSPECIFIED,
+    "always": Mode.MODE_UNSPECIFIED,
     Mode.MODE_DYNAMIC: Mode.MODE_DYNAMIC,
     1: Mode.MODE_DYNAMIC,
     "mode_dynamic": Mode.MODE_DYNAMIC,
