@@ -65,8 +65,8 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:c
         "parts":[
             {"text": "Tell me about this instrument"},
             {
-              "inline_data": {
-                "mime_type":"image/jpeg",
+              "inlineData": {
+                "mimeType":"image/jpeg",
                 "data": "'$(base64 $B64FLAGS $IMG_PATH)'"
               }
             }
@@ -113,9 +113,9 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:c
       "contents": [{
         "parts":[
           {"text": "Can you tell me about the instruments in this photo?"},
-          {"file_data":
-            {"mime_type": "image/jpeg", 
-            "file_uri": '$file_uri'}
+          {"fileData":
+            {"mimeType": "image/jpeg", 
+            "fileUri": '$file_uri'}
           }]
         }]
        }' 
@@ -171,7 +171,7 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:c
       "contents": [{
         "parts":[
           {"text": "Describe this video clip"},
-          {"file_data":{"mime_type": "video/mp4", "file_uri": '$file_uri'}}]
+          {"fileData":{"mimeType": "video/mp4", "fileUri": '$file_uri'}}]
         }]
        }'
 # [END tokens_multimodal_video_audio_file_api]
@@ -184,8 +184,8 @@ echo '{
     {
       "parts":[
         {
-          "inline_data": {
-            "mime_type":"text/plain",
+          "inlineData": {
+            "mimeType":"text/plain",
             "data": "'$(base64 $B64FLAGS $A11_PATH)'"
           }
         }
@@ -215,7 +215,7 @@ echo "[START tokens_system_instruction]"
 # [START tokens_system_instruction]
 curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=$GOOGLE_API_KEY" \
 -H 'Content-Type: application/json' \
--d '{ "system_instruction": {
+-d '{ "systemInstruction": {
     "parts":
       { "text": "You are a cat. Your name is Neko."}},
     "contents": {
@@ -264,15 +264,15 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-lat
   -H 'Content-Type: application/json' \
   -d '
   {
-    "system_instruction": {
+    "systemInstruction": {
       "parts": {
         "text": "You are a helpful lighting system bot. You can turn lights on and off, and you can set the color. Do not perform any other tasks."
       }
     },
     "tools": ['$(source "$tools")'],
 
-    "tool_config": {
-      "function_calling_config": {"mode": "none"}
+    "toolConfig": {
+      "functionCallingConfig": {"mode": "none"}
     },
 
     "contents": {

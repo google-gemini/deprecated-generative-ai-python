@@ -81,8 +81,8 @@ curl https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:st
                         "text": "Tell me about this instrument"
                     },
                     {
-                        "inline_data": {
-                            "mime_type": "image/jpeg",
+                        "inlineData": {
+                            "mimeType": "image/jpeg",
                             "data": "'$(base64 $B64FLAGS $IMG_PATH)'"
                         }
                     }
