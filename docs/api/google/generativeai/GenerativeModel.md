@@ -36,7 +36,6 @@ requests. What media-types are supported for input and output is model-dependant
 
 ```
 >>> import google.generativeai as genai
->>> import PIL.Image
 >>> genai.configure(api_key='YOUR_API_KEY')
 >>> model = genai.GenerativeModel('models/gemini-1.5-flash')
 >>> result = model.generate_content('Tell me a story about a magic backpack')
