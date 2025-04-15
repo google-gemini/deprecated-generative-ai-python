@@ -435,6 +435,7 @@ def _build_schema(fname, fields_dict):
     #    * https://github.com/pydantic/pydantic/issues/1051
     #    * http://cl/586221780
     strip_titles(parameters)
+    strip_additional_properties(parameters)
     return parameters
 
 

@@ -663,9 +663,6 @@ class UnitTests(parameterized.TestCase):
         def fun(a: annotation):
             pass
 
-        if annotation == dict[str, Any]:
-            breakpoint()
-
         cfd = content_types.FunctionDeclaration.from_function(fun)
         got = cfd.parameters.properties["a"]
         self.assertEqual(got, expected)
