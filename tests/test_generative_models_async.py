@@ -91,6 +91,44 @@ class AsyncTests(parameterized.TestCase, unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(response.text, "world!")
 
+    async def test_generate_content_async_with_extra_headerss(self):
+        self.client.generate_content = unittest.mock.AsyncMock()
+        request = unittest.mock.ANY
+        extra_headers = {
+            "Helicone-User-Id": "test-user-123",
+            "Custom-Header": "test-value"
+        }
+
+        model = generative_models.GenerativeModel(model_name="gemini-1.5-flash")
+        await model.generate_content_async("Hello", extra_headers=extra_headers)
+
+        expected_request_options = {"metadata": list(extra_headers.items())}
+
+        self.client.generate_content.assert_called_once_with(
+            request, **expected_request_options
+        )
+
+    async def test_extra_headers_with_existing_request_optionss(self):
+        self.client.generate_content = unittest.mock.AsyncMock()
+        request = unittest.mock.ANY
+
+        extra_headers = {"Helicone-User-Id": "test-user-456"}
+        request_options = {
+            "timeout": 30,
+            "metadata": [("Existing-Header", "existing-value")]
+        }
+
+        model = generative_models.GenerativeModel(model_name="gemini-1.5-flash")
+
+        await model.generate_content_async("Hello", extra_headers=extra_headers, request_options=request_options)
+
+        expected_metadata = [("Existing-Header", "existing-value")] + list(extra_headers.items())
+        expected_request_options = {"timeout": 30, "metadata": expected_metadata}
+
+        self.client.generate_content.assert_called_once_with(
+            request, **expected_request_options
+        )
+
     async def test_streaming(self):
         # Generate text from text prompt
         model = generative_models.GenerativeModel(model_name="gemini-1.5-flash")

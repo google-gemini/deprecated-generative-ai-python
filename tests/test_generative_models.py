@@ -333,6 +333,38 @@ class CUJTests(parameterized.TestCase):
         text = "".join(chunk.text for chunk in response)
         self.assertEqual(text, "first second")
 
+    def test_generate_content_with_extra_headers(self):
+        """Test that extra_headers are properly passed to the underlying client in generate_content."""
+        model = generative_models.GenerativeModel(model_name="gemini-1.5-flash")
+        extra_headers = {"Helicone-User-Id": "test-user-123", "Custom-Header": "test-value"}
+
+        self.responses["generate_content"].append(simple_response("world!"))
+        model.generate_content("Hello", extra_headers=extra_headers)
+
+        request_options = self.observed_kwargs[-1]
+        self.assertIn("metadata", request_options)
+
+        metadata = dict(request_options["metadata"])
+        self.assertEqual("test-user-123", metadata["Helicone-User-Id"])
+        self.assertEqual("test-value", metadata["Custom-Header"])
+    
+    def test_extra_headers_with_existing_request_options(self):
+        """Test that extra_headers are correctly merged with existing request_options."""
+        model = generative_models.GenerativeModel(model_name="gemini-1.5-flash")
+        extra_headers = {"Helicone-User-Id": "test-user-456"}
+        request_options = {"timeout": 30, "metadata": [("Existing-Header", "existing-value")]}
+
+        self.responses["generate_content"].append(simple_response("world!"))
+        model.generate_content("Hello", extra_headers=extra_headers, request_options=request_options)
+
+        observed_options = self.observed_kwargs[-1]
+        self.assertIn("metadata", observed_options)
+
+        metadata = dict(observed_options["metadata"])
+        self.assertEqual("test-user-456", metadata["Helicone-User-Id"])
+        self.assertEqual("existing-value", metadata["Existing-Header"])
+        self.assertEqual(30, observed_options["timeout"])
+    
     @parameterized.named_parameters(
         [
             dict(testcase_name="test_cached_content_as_id", cached_content="test-cached-content"),
