@@ -36,10 +36,7 @@ def get_version():
 
 version = get_version()
 
-if version[0] == "0":
-    release_status = "Development Status :: 4 - Beta"
-else:
-    release_status = "Development Status :: 5 - Production/Stable"
+release_status = "Development Status :: 7 - Inactive"
 
 dependencies = [
     "google-ai-generativelanguage==0.6.15",
@@ -86,6 +83,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.10",  # Colab
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Operating System :: OS Independent",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
         "Typing :: Typed",
