@@ -8,7 +8,7 @@ The Gemini API docs are fully updated to show examples of the new Google Gen AI 
 
 Thank you for building with Gemini and [let us know](https://discuss.ai.google.dev/c/gemini-api/4) if you need any help!
 
-**Please be advised that this repository is now considered legacy.** For the latest features, performance improvements, and active development, we strongly recommend migrating to the official **[Google Generative AI SDK for JavaScript](https://github.com/googleapis/python-genai)**.
+**Please be advised that this repository is now considered legacy.** For the latest features, performance improvements, and active development, we strongly recommend migrating to the official **[Google Generative AI SDK for Python](https://github.com/googleapis/python-genai)**.
 
 **Support Plan for this Repository:**
 
