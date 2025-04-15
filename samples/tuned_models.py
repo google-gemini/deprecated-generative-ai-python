@@ -25,7 +25,7 @@ class UnitTests(absltest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Code to run once before all tests in the class
-                # [START tuned_models_create]
+        # [START tuned_models_create]
         import google.generativeai as genai
 
         import time
@@ -74,9 +74,8 @@ class UnitTests(absltest.TestCase):
         result = model.generate_content("III")
         print(result.text)  # IV
         # [END tuned_models_create]
-        
-        cls.tuned_model_name = tuned_model_name = tuned_model.name
 
+        cls.tuned_model_name = tuned_model_name = tuned_model.name
 
     def test_tuned_models_generate_content(self):
         # [START tuned_models_generate_content]
