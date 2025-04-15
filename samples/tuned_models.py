@@ -22,8 +22,10 @@ samples = pathlib.Path(__file__).parent
 
 
 class UnitTests(absltest.TestCase):
-    def test_tuned_models_create(self):
-        # [START tuned_models_create]
+    @classmethod
+    def setUpClass(cls):
+        # Code to run once before all tests in the class
+                # [START tuned_models_create]
         import google.generativeai as genai
 
         import time
@@ -53,7 +55,7 @@ class UnitTests(absltest.TestCase):
             # You can use a tuned model here too. Set `source_model="tunedModels/..."`
             display_name="increment",
             source_model=base_model,
-            epoch_count=20,
+            epoch_count=5,
             batch_size=4,
             learning_rate=0.001,
             training_data=training_data,
@@ -62,22 +64,25 @@ class UnitTests(absltest.TestCase):
         for status in operation.wait_bar():
             time.sleep(10)
 
-        result = operation.result()
-        print(result)
+        tuned_model = operation.result()
+        print(tuned_model)
         # # You can plot the loss curve with:
         # snapshots = pd.DataFrame(result.tuning_task.snapshots)
         # sns.lineplot(data=snapshots, x='epoch', y='mean_loss')
 
-        model = genai.GenerativeModel(model_name=result.name)
+        model = genai.GenerativeModel(model_name=tuned_model.name)
         result = model.generate_content("III")
         print(result.text)  # IV
         # [END tuned_models_create]
+        
+        cls.tuned_model_name = tuned_model_name = tuned_model.name
+
 
     def test_tuned_models_generate_content(self):
         # [START tuned_models_generate_content]
         import google.generativeai as genai
 
-        model = genai.GenerativeModel(model_name="tunedModels/my-increment-model")
+        model = genai.GenerativeModel(model_name=self.tuned_model_name)
         result = model.generate_content("III")
         print(result.text)  # "IV"
         # [END tuned_models_generate_content]
@@ -86,7 +91,7 @@ class UnitTests(absltest.TestCase):
         # [START tuned_models_get]
         import google.generativeai as genai
 
-        model_info = genai.get_model("tunedModels/my-increment-model")
+        model_info = genai.get_model(self.tuned_model_name)
         print(model_info)
         # [END tuned_models_get]
 
@@ -100,6 +105,7 @@ class UnitTests(absltest.TestCase):
 
     def test_tuned_models_delete(self):
         import time
+        import google.generativeai as genai
 
         base_model = "models/gemini-1.5-flash-001-tuning"
         training_data = samples / "increment_tuning_data.json"
@@ -109,7 +115,7 @@ class UnitTests(absltest.TestCase):
                 # You can use a tuned model here too. Set `source_model="tunedModels/..."`
                 display_name="increment",
                 source_model=base_model,
-                epoch_count=20,
+                epoch_count=5,
                 batch_size=4,
                 learning_rate=0.001,
                 training_data=training_data,
@@ -135,7 +141,7 @@ class UnitTests(absltest.TestCase):
         # [START tuned_models_permissions_create]
         import google.generativeai as genai
 
-        model_info = genai.get_model("tunedModels/my-increment-model")
+        model_info = genai.get_model(self.tuned_model_name)
         # [START_EXCLUDE]
         for p in model_info.permissions.list():
             if p.role.name != "OWNER":
@@ -161,7 +167,7 @@ class UnitTests(absltest.TestCase):
         # [START tuned_models_permissions_list]
         import google.generativeai as genai
 
-        model_info = genai.get_model("tunedModels/my-increment-model")
+        model_info = genai.get_model(self.tuned_model_name)
 
         # [START_EXCLUDE]
         for p in model_info.permissions.list():
@@ -190,7 +196,7 @@ class UnitTests(absltest.TestCase):
         # [START tuned_models_permissions_get]
         import google.generativeai as genai
 
-        model_info = genai.get_model("tunedModels/my-increment-model")
+        model_info = genai.get_model(self.tuned_model_name)
 
         # [START_EXCLUDE]
         for p in model_info.permissions.list():
@@ -214,7 +220,7 @@ class UnitTests(absltest.TestCase):
         # [START tuned_models_permissions_update]
         import google.generativeai as genai
 
-        model_info = genai.get_model("tunedModels/my-increment-model")
+        model_info = genai.get_model(self.tuned_model_name)
 
         # [START_EXCLUDE]
         for p in model_info.permissions.list():
@@ -235,7 +241,7 @@ class UnitTests(absltest.TestCase):
         # [START tuned_models_permissions_delete]
         import google.generativeai as genai
 
-        model_info = genai.get_model("tunedModels/my-increment-model")
+        model_info = genai.get_model(self.tuned_model_name)
         # [START_EXCLUDE]
         for p in model_info.permissions.list():
             if p.role.name != "OWNER":
