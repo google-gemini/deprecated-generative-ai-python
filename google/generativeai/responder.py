@@ -92,4 +92,3 @@ def _rename_schema_fields(schema: dict[str, Any]):
         schema["properties"] = {k: _rename_schema_fields(v) for k, v in properties.items()}
 
     return schema
-

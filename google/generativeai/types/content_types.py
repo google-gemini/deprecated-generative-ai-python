@@ -484,6 +484,7 @@ def strip_titles(schema):
     if items is not None:
         strip_titles(items)
 
+
 def strip_additional_properties(schema):
     schema.pop("additionalProperties", None)
 
@@ -495,6 +496,7 @@ def strip_additional_properties(schema):
     items = schema.get("items", None)
     if items is not None:
         strip_additional_properties(items)
+
 
 def add_object_type(schema):
     properties = schema.get("properties", None)
