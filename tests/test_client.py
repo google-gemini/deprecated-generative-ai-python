@@ -29,8 +29,44 @@ class ClientTests(parameterized.TestCase):
         client_opts = client._client_manager.client_config["client_options"]
         self.assertEqual(client_opts.api_key, "AIzA_client_opts")
 
+    @mock.patch.dict(os.environ, {"GEMINI_API_KEY": "AIzA_env"})
+    def test_api_key_from_environment(self):
+        # Default to API key loaded from environment.
+        client.configure()
+        client_opts = client._client_manager.client_config["client_options"]
+        self.assertEqual(client_opts.api_key, "AIzA_env")
+
+        # But not when a key is provided explicitly.
+        client.configure(api_key="AIzA_client")
+        client_opts = client._client_manager.client_config["client_options"]
+        self.assertEqual(client_opts.api_key, "AIzA_client")
+
     @mock.patch.dict(os.environ, {"GOOGLE_API_KEY": "AIzA_env"})
     def test_api_key_from_environment(self):
+        # Default to API key loaded from environment.
+        client.configure()
+        client_opts = client._client_manager.client_config["client_options"]
+        self.assertEqual(client_opts.api_key, "AIzA_env")
+
+        # But not when a key is provided explicitly.
+        client.configure(api_key="AIzA_client")
+        client_opts = client._client_manager.client_config["client_options"]
+        self.assertEqual(client_opts.api_key, "AIzA_client")
+
+    @mock.patch.dict(os.environ, {"GEMINI_API_KEY": "", "GOOGLE_API_KEY": "AIzA_env"})
+    def test_empty_gemini_api_key_doesnt_shadow(self):
+        # Default to API key loaded from environment.
+        client.configure()
+        client_opts = client._client_manager.client_config["client_options"]
+        self.assertEqual(client_opts.api_key, "AIzA_env")
+
+        # But not when a key is provided explicitly.
+        client.configure(api_key="AIzA_client")
+        client_opts = client._client_manager.client_config["client_options"]
+        self.assertEqual(client_opts.api_key, "AIzA_client")
+
+    @mock.patch.dict(os.environ, {"GEMINI_API_KEY": "", "GOOGLE_API_KEY": "AIzA_env"})
+    def test_empty_google_api_key_doesnt_shadow(self):
         # Default to API key loaded from environment.
         client.configure()
         client_opts = client._client_manager.client_config["client_options"]

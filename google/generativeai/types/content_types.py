@@ -435,6 +435,7 @@ def _build_schema(fname, fields_dict):
     #    * https://github.com/pydantic/pydantic/issues/1051
     #    * http://cl/586221780
     strip_titles(parameters)
+    strip_additional_properties(parameters)
     return parameters
 
 
@@ -482,6 +483,19 @@ def strip_titles(schema):
     items = schema.get("items", None)
     if items is not None:
         strip_titles(items)
+
+
+def strip_additional_properties(schema):
+    schema.pop("additionalProperties", None)
+
+    properties = schema.get("properties", None)
+    if properties is not None:
+        for name, value in properties.items():
+            strip_additional_properties(value)
+
+    items = schema.get("items", None)
+    if items is not None:
+        strip_additional_properties(items)
 
 
 def add_object_type(schema):

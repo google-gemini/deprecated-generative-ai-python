@@ -23,6 +23,7 @@ from typing_extensions import TypedDict
 import pydantic
 
 from google.generativeai import protos
+from google.generativeai.types import content_types
 
 Type = protos.Type
 
@@ -89,52 +90,36 @@ def _generate_schema(
     """
     if descriptions is None:
         descriptions = {}
-    if required is None:
-        required = []
     defaults = dict(inspect.signature(f).parameters)
-    fields_dict = {
-        name: (
-            # 1. We infer the argument type here: use Any rather than None so
-            # it will not try to auto-infer the type based on the default value.
-            (param.annotation if param.annotation != inspect.Parameter.empty else Any),
-            pydantic.Field(
-                # 2. We do not support default values for now.
-                # default=(
-                #     param.default if param.default != inspect.Parameter.empty
-                #     else None
-                # ),
-                # 3. We support user-provided descriptions.
-                description=descriptions.get(name, None),
-            ),
-        )
-        for name, param in defaults.items()
-        # We do not support *args or **kwargs
-        if param.kind
-        in (
+
+    fields_dict = {}
+    for name, param in defaults.items():
+        if param.kind in (
             inspect.Parameter.POSITIONAL_OR_KEYWORD,
             inspect.Parameter.KEYWORD_ONLY,
             inspect.Parameter.POSITIONAL_ONLY,
-        )
-    }
-    parameters = pydantic.create_model(f.__name__, **fields_dict).model_json_schema()
-    # Postprocessing
-    # 4. Suppress unnecessary title generation:
-    #    * https://github.com/pydantic/pydantic/issues/1051
-    #    * http://cl/586221780
-    parameters.pop("title", None)
-    for name, function_arg in parameters.get("properties", {}).items():
-        function_arg.pop("title", None)
-        annotation = defaults[name].annotation
-        # 5. Nullable fields:
-        #     * https://github.com/pydantic/pydantic/issues/1270
-        #     * https://stackoverflow.com/a/58841311
-        #     * https://github.com/pydantic/pydantic/discussions/4872
-        if typing.get_origin(annotation) is typing.Union and type(None) in typing.get_args(
-            annotation
         ):
-            function_arg["nullable"] = True
+            # We do not support default values for now.
+            # default=(
+            #     param.default if param.default != inspect.Parameter.empty
+            #     else None
+            # ),
+            field = pydantic.Field(
+                # We support user-provided descriptions.
+                description=descriptions.get(name, None)
+            )
+
+            # 1. We infer the argument type here: use Any rather than None so
+            # it will not try to auto-infer the type based on the default value.
+            if param.annotation != inspect.Parameter.empty:
+                fields_dict[name] = param.annotation, field
+            else:
+                fields_dict[name] = Any, field
+
+    parameters = _build_schema(f.__name__, fields_dict)
+
     # 6. Annotate required fields.
-    if required:
+    if required is not None:
         # We use the user-provided "required" fields if specified.
         parameters["required"] = required
     else:
@@ -152,8 +137,136 @@ def _generate_schema(
                 )
             )
         ]
-    schema = dict(name=f.__name__, description=f.__doc__, parameters=parameters)
+    schema = dict(name=f.__name__, description=f.__doc__)
+    if parameters["properties"]:
+        schema["parameters"] = parameters
+
     return schema
+
+
+def _build_schema(fname, fields_dict):
+    parameters = pydantic.create_model(fname, **fields_dict).model_json_schema()
+    defs = parameters.pop("$defs", {})
+    # flatten the defs
+    for name, value in defs.items():
+        unpack_defs(value, defs)
+    unpack_defs(parameters, defs)
+
+    # 5. Nullable fields:
+    #     * https://github.com/pydantic/pydantic/issues/1270
+    #     * https://stackoverflow.com/a/58841311
+    #     * https://github.com/pydantic/pydantic/discussions/4872
+    convert_to_nullable(parameters)
+    add_object_type(parameters)
+    # Postprocessing
+    # 4. Suppress unnecessary title generation:
+    #    * https://github.com/pydantic/pydantic/issues/1051
+    #    * http://cl/586221780
+    strip_titles(parameters)
+    strip_additional_properties(parameters)
+    return parameters
+
+
+def unpack_defs(schema, defs):
+    properties = schema.get("properties", None)
+    if properties is None:
+        return
+
+    for name, value in properties.items():
+        ref_key = value.get("$ref", None)
+        if ref_key is not None:
+            ref = defs[ref_key.split("defs/")[-1]]
+            unpack_defs(ref, defs)
+            properties[name] = ref
+            continue
+
+        anyof = value.get("anyOf", None)
+        if anyof is not None:
+            for i, atype in enumerate(anyof):
+                ref_key = atype.get("$ref", None)
+                if ref_key is not None:
+                    ref = defs[ref_key.split("defs/")[-1]]
+                    unpack_defs(ref, defs)
+                    anyof[i] = ref
+            continue
+
+        items = value.get("items", None)
+        if items is not None:
+            ref_key = items.get("$ref", None)
+            if ref_key is not None:
+                ref = defs[ref_key.split("defs/")[-1]]
+                unpack_defs(ref, defs)
+                value["items"] = ref
+                continue
+
+
+def strip_titles(schema):
+    title = schema.pop("title", None)
+
+    properties = schema.get("properties", None)
+    if properties is not None:
+        for name, value in properties.items():
+            strip_titles(value)
+
+    items = schema.get("items", None)
+    if items is not None:
+        strip_titles(items)
+
+
+def strip_additional_properties(schema):
+    schema.pop("additionalProperties", None)
+
+    properties = schema.get("properties", None)
+    if properties is not None:
+        for name, value in properties.items():
+            strip_additional_properties(value)
+
+    items = schema.get("items", None)
+    if items is not None:
+        strip_additional_properties(items)
+
+
+def add_object_type(schema):
+    properties = schema.get("properties", None)
+    if properties is not None:
+        schema.pop("required", None)
+        schema["type"] = "object"
+        for name, value in properties.items():
+            add_object_type(value)
+
+    items = schema.get("items", None)
+    if items is not None:
+        add_object_type(items)
+
+
+def convert_to_nullable(schema):
+    anyof = schema.pop("anyOf", None)
+    if anyof is not None:
+        if len(anyof) != 2:
+            raise ValueError(
+                "Invalid input: Type Unions are not supported, except for `Optional` types. "
+                "Please provide an `Optional` type or a non-Union type."
+            )
+        a, b = anyof
+        if a == {"type": "null"}:
+            schema.update(b)
+        elif b == {"type": "null"}:
+            schema.update(a)
+        else:
+            raise ValueError(
+                "Invalid input: Type Unions are not supported, except for `Optional` types. "
+                "Please provide an `Optional` type or a non-Union type."
+            )
+        schema["nullable"] = True
+
+    properties = schema.get("properties", None)
+    if properties is not None:
+        for name, value in properties.items():
+            convert_to_nullable(value)
+
+    items = schema.get("items", None)
+    if items is not None:
+        convert_to_nullable(items)
 
 
 def _rename_schema_fields(schema: dict[str, Any]):
