@@ -26,7 +26,7 @@ from google.generativeai import client as client_lib
 from absl.testing import absltest
 from absl.testing import parameterized
 
-DEFAULT_EMB_MODEL = "models/embedding-001"
+DEFAULT_EMB_MODEL = "embedding-001"
 
 
 class AsyncTests(parameterized.TestCase, unittest.IsolatedAsyncioTestCase):
