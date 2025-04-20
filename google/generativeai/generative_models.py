@@ -244,6 +244,7 @@ class GenerativeModel:
         tools: content_types.FunctionLibraryType | None = None,
         tool_config: content_types.ToolConfigType | None = None,
         request_options: helper_types.RequestOptionsType | None = None,
+        extra_headers: dict[str, str] | None = None,
     ) -> generation_types.GenerateContentResponse:
         """A multipurpose function to generate responses from the model.
 
@@ -298,6 +299,7 @@ class GenerativeModel:
             stream: If True, yield response chunks as they are generated.
             tools: `protos.Tools` more info coming soon.
             request_options: Options for the request.
+            extra_headers: Optional headers to include with this specific request.
         """
         if not contents:
             raise TypeError("contents must not be empty")
@@ -318,6 +320,21 @@ class GenerativeModel:
 
         if request_options is None:
             request_options = {}
+        else:
+            request_options = (
+                request_options.copy()
+                if isinstance(request_options, dict)
+                else vars(request_options).copy()
+            )
+
+        metadata = list(request_options.get("metadata", []))
+        if extra_headers:
+            metadata += list(extra_headers.items())
+
+        if metadata:
+            request_options["metadata"] = metadata
+        elif "metadata" in request_options:
+            del request_options["metadata"]
 
         try:
             if stream:
@@ -351,6 +368,7 @@ class GenerativeModel:
         tools: content_types.FunctionLibraryType | None = None,
         tool_config: content_types.ToolConfigType | None = None,
         request_options: helper_types.RequestOptionsType | None = None,
+        extra_headers: dict[str, str] | None = None,
     ) -> generation_types.AsyncGenerateContentResponse:
         """The async version of `GenerativeModel.generate_content`."""
         if not contents:
@@ -372,6 +390,21 @@ class GenerativeModel:
 
         if request_options is None:
             request_options = {}
+        else:
+            request_options = (
+                request_options.copy()
+                if isinstance(request_options, dict)
+                else vars(request_options).copy()
+            )
+
+        metadata = list(request_options.get("metadata", []))
+        if extra_headers:
+            metadata += list(extra_headers.items())
+
+        if metadata:
+            request_options["metadata"] = metadata
+        elif "metadata" in request_options:
+            del request_options["metadata"]
 
         try:
             if stream:
