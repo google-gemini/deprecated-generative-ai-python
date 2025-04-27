@@ -36,7 +36,8 @@ def list_operations(*, client=None) -> Iterator[CreateTunedModelOperation]:
     # not a gapic Operation object (`google.api_core.operation.Operation`)
     operations = (
         CreateTunedModelOperation.from_proto(op, client)
-        for op in client.list_operations(name="", filter_="")
+        for op in client.list_operations(
+          name="", filter_="")
     )
 
     return operations
