@@ -829,7 +829,7 @@ def _make_tool(tool: ToolType) -> Tool:
             return Tool(google_search_retrieval=protos.GoogleSearchRetrieval())
         else:
             raise ValueError(
-                "The only string that can be passed as a tool is 'code_execution', or one of the specified values for the `mode` parameter for google_search_retrieval."
+                "The only strings that can be passed as a `tool` is 'code_execution' or 'google_search_retrieval'."
             )
     elif isinstance(tool, protos.CodeExecution):
         return Tool(code_execution=tool)
