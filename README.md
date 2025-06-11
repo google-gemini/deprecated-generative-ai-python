@@ -14,7 +14,7 @@ Thank you for building with Gemini and [let us know](https://discuss.ai.google.d
 
 *   **Limited Maintenance:** Development is now restricted to **critical bug fixes only**. No new features will be added.
 *   **Purpose:** This limited support aims to provide stability for users while they transition to the new SDK.
-*   **End-of-Life Date:** All support for this repository (including bug fixes) will permanently end on **August 31st, 2025**.
+*   **End-of-Life Date:** All support for this repository (including bug fixes) will permanently end on **September 30, 2025**.
 
 We encourage all users to begin planning their migration to the [Google Generative AI SDK](https://github.com/googleapis/python-genai) to ensure continued access to the latest capabilities and support.
 
