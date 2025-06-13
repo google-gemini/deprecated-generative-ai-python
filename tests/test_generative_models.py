@@ -48,10 +48,16 @@ class MockGenerativeServiceClient:
     def generate_content(
         self,
         request: protos.GenerateContentRequest,
+        *,
+        extra_headers: dict[str, str] | None = None,
         **kwargs,
     ) -> protos.GenerateContentResponse:
         self.test.assertIsInstance(request, protos.GenerateContentRequest)
         self.observed_requests.append(request)
+        # Convert extra_headers to metadata format and ensure it's in kwargs
+        if extra_headers:
+            metadata = [(k, v) for k, v in extra_headers.items()]
+            kwargs.setdefault("metadata", []).extend(metadata) 
         self.observed_kwargs.append(kwargs)
         response = self.responses["generate_content"].pop(0)
         return response
@@ -59,9 +65,15 @@ class MockGenerativeServiceClient:
     def stream_generate_content(
         self,
         request: protos.GetModelRequest,
+        *,
+        extra_headers: dict[str, str] | None = None,
         **kwargs,
     ) -> Iterable[protos.GenerateContentResponse]:
         self.observed_requests.append(request)
+        # Convert extra_headers to metadata format and ensure it's in kwargs
+        if extra_headers:
+            metadata = [(k, v) for k, v in extra_headers.items()]
+            kwargs.setdefault("metadata", []).extend(metadata)
         self.observed_kwargs.append(kwargs)
         response = self.responses["stream_generate_content"].pop(0)
         return response
