@@ -22,12 +22,22 @@ import logging
 from google.generativeai import protos
 from itertools import islice
 from io import IOBase
+import asyncio
 
 from google.generativeai.types import file_types
 
 from google.generativeai.client import get_default_file_client
 
-__all__ = ["upload_file", "get_file", "list_files", "delete_file"]
+__all__ = [
+    "upload_file",
+    "get_file",
+    "list_files",
+    "delete_file",
+    "upload_file_async",
+    "get_file_async",
+    "list_files_async",
+    "delete_file_async",
+]
 
 mimetypes.add_type("image/webp", ".webp")
 
@@ -88,6 +98,10 @@ def upload_file(
     return file_types.File(response)
 
 
+async def upload_file_async(*args, **kwargs):
+    return await asyncio.to_thread(upload_file, *args, **kwargs)
+
+
 def list_files(page_size=100) -> Iterable[file_types.File]:
     """Calls the API to list files using a supported file service."""
     client = get_default_file_client()
@@ -97,12 +111,20 @@ def list_files(page_size=100) -> Iterable[file_types.File]:
         yield file_types.File(proto)
 
 
+async def list_files_async(*args, **kwargs):
+    return await asyncio.to_thread(list_files, *args, **kwargs)
+
+
 def get_file(name: str) -> file_types.File:
     """Calls the API to retrieve a specified file using a supported file service."""
     if "/" not in name:
         name = f"files/{name}"
     client = get_default_file_client()
     return file_types.File(client.get_file(name=name))
+
+
+async def get_file_async(*args, **kwargs):
+    return await asyncio.to_thread(get_file, *args, **kwargs)
 
 
 def delete_file(name: str | file_types.File | protos.File):
@@ -114,3 +136,7 @@ def delete_file(name: str | file_types.File | protos.File):
     request = protos.DeleteFileRequest(name=name)
     client = get_default_file_client()
     client.delete_file(request=request)
+
+
+async def delete_file_async(*args, **kwargs):
+    return await asyncio.to_thread(get_file, *args, **kwargs)
