@@ -50,43 +50,39 @@ except Exception as e:
 
 # Test 4: Base64 encoded image (simulating user's approach)
 print("\n4. Testing base64 encoding approach (user's original method):")
+temp_path = pathlib.Path(__file__).parent / "temp_test_image.png"
 try:
     import base64
     # Create a test image and save it
     test_img = PIL.Image.fromarray(np.random.randint(0, 255, [100, 100, 3], dtype=np.uint8))
-    temp_path = pathlib.Path(__file__).parent / "temp_test_image.png"
     test_img.save(temp_path)
-    
+
     # User's encoding method
     with open(temp_path, 'rb') as image_file:
         encoded = base64.b64encode(image_file.read()).decode('utf-8')
-    
+
     print(f"   ✓ Successfully encoded image using base64")
     print(f"     Encoded length: {len(encoded)} characters")
-    
+
     # Now test with our library
-    opened_img = PIL.Image.open(temp_path)
-    blob = content_types.image_to_blob(opened_img)
-    print(f"   ✓ Successfully converted opened image via library")
-    print(f"     MIME type: {blob.mime_type}")
-    print(f"     Data size: {len(blob.data)} bytes")
-    
-    # Close the image before deleting the file
-    opened_img.close()
-    # Clean up
-    temp_path.unlink()
+    with PIL.Image.open(temp_path) as opened_img:
+        blob = content_types.image_to_blob(opened_img)
+        print(f"   ✓ Successfully converted opened image via library")
+        print(f"     MIME type: {blob.mime_type}")
+        print(f"     Data size: {len(blob.data)} bytes")
 except Exception as e:
     print(f"   ✗ Error: {type(e).__name__}: {e}")
     import traceback
     traceback.print_exc()
-    # Try to clean up even if there was an error
-    try:
-        if 'temp_path' in locals() and temp_path.exists():
+finally:
+    # Clean up
+    if temp_path.exists():
+        try:
             import time
             time.sleep(0.1)  # Brief pause to allow file handles to close
             temp_path.unlink()
-    except:
-        pass
+        except Exception as unlink_e:
+            print(f"   ✗ Error during cleanup: {unlink_e}")
 
 print("\n" + "=" * 60)
 print("All tests completed!")
