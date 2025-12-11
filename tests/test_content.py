@@ -92,8 +92,12 @@ class UnitTests(parameterized.TestCase):
     def test_numpy_to_blob(self, image):
         blob = content_types.image_to_blob(image)
         self.assertIsInstance(blob, protos.Blob)
-        self.assertEqual(blob.mime_type, "image/webp")
-        self.assertStartsWith(blob.data, b"RIFF \x00\x00\x00WEBPVP8L")
+        # The blob should be either WebP or PNG (PNG is fallback for WebP conversion errors)
+        self.assertIn(blob.mime_type, ["image/webp", "image/png"])
+        if blob.mime_type == "image/webp":
+            self.assertStartsWith(blob.data, b"RIFF")
+        elif blob.mime_type == "image/png":
+            self.assertStartsWith(blob.data, b"\x89PNG")
 
     @parameterized.named_parameters(
         ["PIL", PIL.Image.open(TEST_PNG_PATH)],

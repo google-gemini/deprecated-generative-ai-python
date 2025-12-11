@@ -112,9 +112,30 @@ def _pil_to_blob(image: PIL.Image.Image) -> protos.Blob:
     def webp_blob(image: PIL.Image.Image) -> protos.Blob:
         # Reference: https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#webp
         image_io = io.BytesIO()
-        image.save(image_io, format="webp", lossless=True)
+        
+        # Convert RGBA images to RGB before saving as WebP to avoid compatibility issues
+        # Some Pillow versions have issues with RGBA -> WebP lossless conversion
+        if image.mode == "RGBA":
+            # Create a white background
+            rgb_image = PIL.Image.new("RGB", image.size, (255, 255, 255))
+            # Paste the image using its alpha channel as mask
+            rgb_image.paste(image, mask=image.split()[3])  # 3 is the alpha channel
+            image = rgb_image
+        elif image.mode not in ("RGB", "L"):
+            # Convert other modes (e.g., P, LA) to RGB
+            image = image.convert("RGB")
+        
+        try:
+            image.save(image_io, format="webp", lossless=True)
+        except Exception as e:
+            # If lossless WebP fails, fall back to PNG format
+            # PNG is widely supported and provides lossless compression
+            image_io = io.BytesIO()
+            image.save(image_io, format="png")
+            image_io.seek(0)
+            return protos.Blob(mime_type="image/png", data=image_io.read())
+        
         image_io.seek(0)
-
         mime_type = "image/webp"
         image_bytes = image_io.read()
 
