@@ -128,6 +128,8 @@ def _pil_to_blob(image: PIL.Image.Image) -> protos.Blob:
         try:
             image.save(image_io, format="webp", lossless=True)
         except Exception as e:
+            import logging
+            logging.warning(f"WebP conversion failed, falling back to PNG. Reason: {e}")
             # If lossless WebP fails, fall back to PNG format
             # PNG is widely supported and provides lossless compression
             image_io = io.BytesIO()
