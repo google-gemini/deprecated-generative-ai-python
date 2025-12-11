@@ -115,14 +115,15 @@ def _pil_to_blob(image: PIL.Image.Image) -> protos.Blob:
         
         # Convert RGBA images to RGB before saving as WebP to avoid compatibility issues
         # Some Pillow versions have issues with RGBA -> WebP lossless conversion
-        if image.mode == "RGBA":
+        if image.mode in ("RGBA", "LA"):
             # Create a white background
             rgb_image = PIL.Image.new("RGB", image.size, (255, 255, 255))
             # Paste the image using its alpha channel as mask
-            rgb_image.paste(image, mask=image.split()[3])  # 3 is the alpha channel
+            rgb_image.paste(image, mask=image.getchannel('A'))
             image = rgb_image
         elif image.mode not in ("RGB", "L"):
-            # Convert other modes (e.g., P, LA) to RGB
+            # Convert other modes (e.g., P) to RGB.
+            # Note: .convert('RGB') might use a black background for transparent 'P' images.
             image = image.convert("RGB")
         
         try:
