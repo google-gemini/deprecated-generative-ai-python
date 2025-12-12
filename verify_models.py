@@ -42,8 +42,8 @@ def main():
         api_key = input("Please enter your API key: ").strip()
         
         if not api_key:
-            print("ERROR: No API key provided.")
-            print("\nGet your API key from: https://aistudio.google.com/app/apikey")
+            print("ERROR: No API key provided.", file=sys.stderr)
+            print("\nGet your API key from: https://aistudio.google.com/app/apikey", file=sys.stderr)
             sys.exit(1)
     
     # Configure the SDK
