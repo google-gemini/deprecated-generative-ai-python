@@ -18,7 +18,7 @@ The model name **"Gemini-3-Pro-Preview"** does not exist. This is causing the AP
 - `gemini-2.0-flash-001`
 
 ### 2. Deprecated SDK
-This repository (`google-gemini/deprecated-generative-ai-python`) is **deprecated** and will reach End-of-Life on **November 30, 2025**. 
+This repository (`google-gemini/deprecated-generative-ai-python`) is **deprecated** and will reach End-of-Life on **November 30, 2025**.
 
 ## Solutions
 
