@@ -50,18 +50,26 @@ def webp_blob(image: PIL.Image.Image) -> protos.Blob:
 def webp_blob(image: PIL.Image.Image) -> protos.Blob:
     image_io = io.BytesIO()
     
-    # Convert RGBA images to RGB before saving as WebP
-    if image.mode == "RGBA":
+    # Convert RGBA images to RGB before saving as WebP to avoid compatibility issues
+    # Some Pillow versions have issues with RGBA -> WebP lossless conversion
+    if image.mode in ("RGBA", "LA"):
+        # Create a white background
         rgb_image = PIL.Image.new("RGB", image.size, (255, 255, 255))
-        rgb_image.paste(image, mask=image.split()[3])
+        # Paste the image using its alpha channel as mask
+        rgb_image.paste(image, mask=image.getchannel('A'))
         image = rgb_image
     elif image.mode not in ("RGB", "L"):
+        # Convert other modes (e.g., P) to RGB.
+        # Note: .convert('RGB') might use a black background for transparent 'P' images.
         image = image.convert("RGB")
     
     try:
         image.save(image_io, format="webp", lossless=True)
     except Exception as e:
-        # Fallback to PNG format
+        import logging
+        logging.warning(f"WebP conversion failed, falling back to PNG. Reason: {e}")
+        # If lossless WebP fails, fall back to PNG format
+        # PNG is widely supported and provides lossless compression
         image_io = io.BytesIO()
         image.save(image_io, format="png")
         image_io.seek(0)
