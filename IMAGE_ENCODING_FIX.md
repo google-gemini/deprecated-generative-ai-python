@@ -142,8 +142,18 @@ To verify the fix resolves your issue:
    
    # This now works reliably
    image = PIL.Image.open(image_path)
-   model = genai.GenerativeModel('gemini-1.5-flash')
+   model = genai.GenerativeModel('gemini-2.0-flash')
    response = model.generate_content(['Describe this image', image])
    ```
+
+### Valid Model Names
+
+Use any of these valid Gemini model names:
+- `gemini-2.0-flash` (recommended for most use cases - newest & fast)
+- `gemini-2.0-flash-001`
+- `gemini-1.5-flash`
+- `gemini-1.5-flash-latest`
+- `gemini-1.5-pro`
+- `gemini-1.5-pro-latest`
 
 Both approaches should work without errors.
