@@ -89,7 +89,7 @@ For Roocode users:
 import google.generativeai as genai
 
 genai.configure(api_key="YOUR_API_KEY")
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.0-flash")
 response = model.generate_content("Hello")
 print(response.text)
 ```
@@ -100,7 +100,7 @@ from google import genai
 
 client = genai.Client(api_key="YOUR_API_KEY")
 response = client.models.generate_content(
-    model="gemini-1.5-flash",
+    model="gemini-2.0-flash",
     contents="Hello"
 )
 print(response.text)

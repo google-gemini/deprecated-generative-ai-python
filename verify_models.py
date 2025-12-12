@@ -38,7 +38,7 @@ def main():
     api_key = os.environ.get("GEMINI_API_KEY")
     
     if not api_key:
-        print("API key not found in environment variable GEMINI_API_KEY")
+        print("API key not found in environment variable GEMINI_API_KEY", file=sys.stderr)
         api_key = input("Please enter your API key: ").strip()
         
         if not api_key:
@@ -71,7 +71,7 @@ def main():
                 print(f"   Output Token Limit: {model.output_token_limit:,}")
         
         if not models_found:
-            print("No models found with generateContent capability.")
+            print("No models found with generateContent capability.", file=sys.stderr)
             
     except Exception as e:
         print(f"\nERROR: Failed to list models: {e}", file=sys.stderr)

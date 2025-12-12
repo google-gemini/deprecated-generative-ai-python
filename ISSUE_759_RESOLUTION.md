@@ -10,11 +10,11 @@ Users attempting to use "Gemini-3-Pro-Preview" with the Roocode VSCode extension
 The model name **"Gemini-3-Pro-Preview"** does not exist. This is causing the API requests to fail.
 
 **Valid model names include:**
-- `gemini-1.5-flash` (recommended for most use cases)
+- `gemini-2.0-flash` (recommended for most use cases - newest model)
+- `gemini-1.5-flash`
 - `gemini-1.5-flash-latest`
 - `gemini-1.5-pro`
 - `gemini-1.5-pro-latest`
-- `gemini-2.0-flash` (newest model)
 - `gemini-2.0-flash-001`
 
 ### 2. Deprecated SDK
@@ -60,7 +60,7 @@ All users should migrate to the **new [Google Generative AI SDK](https://github.
    import google.generativeai as genai
    
    genai.configure(api_key="YOUR_API_KEY")
-   model = genai.GenerativeModel("gemini-1.5-flash")
+   model = genai.GenerativeModel("gemini-2.0-flash")
    response = model.generate_content("Hello")
    ```
    
@@ -70,7 +70,7 @@ All users should migrate to the **new [Google Generative AI SDK](https://github.
    
    client = genai.Client(api_key="YOUR_API_KEY")
    response = client.models.generate_content(
-       model="gemini-1.5-flash",
+       model="gemini-2.0-flash",
        contents="Hello"
    )
    ```
