@@ -51,7 +51,7 @@ def main():
         genai.configure(api_key=api_key)
         print("✓ API key configured successfully\n")
     except Exception as e:
-        print(f"ERROR: Failed to configure API key: {e}")
+        print(f"ERROR: Failed to configure API key: {e}", file=sys.stderr)
         sys.exit(1)
     
     # List available models
