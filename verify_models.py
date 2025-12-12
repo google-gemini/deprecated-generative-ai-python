@@ -26,12 +26,12 @@ def main():
     try:
         import google.generativeai as genai
     except ImportError:
-        print("ERROR: google-generativeai package not installed.")
-        print("\nNote: This is the DEPRECATED SDK.")
-        print("Please install the NEW SDK instead:")
-        print("  pip install google-genai")
-        print("\nOr to use this deprecated SDK:")
-        print("  pip install google-generativeai")
+        print("ERROR: google-generativeai package not installed.", file=sys.stderr)
+        print("\nNote: This is the DEPRECATED SDK.", file=sys.stderr)
+        print("Please install the NEW SDK instead:", file=sys.stderr)
+        print("  pip install google-genai", file=sys.stderr)
+        print("\nOr to use this deprecated SDK:", file=sys.stderr)
+        print("  pip install google-generativeai", file=sys.stderr)
         sys.exit(1)
     
     # Get API key
