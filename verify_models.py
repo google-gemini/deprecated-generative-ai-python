@@ -98,7 +98,7 @@ def main():
         print(f"Response: {response.text}")
         
     except Exception as e:
-        print(f"\n✗ Model test failed: {e}")
+        print(f"\n✗ Model test failed: {e}", file=sys.stderr)
         sys.exit(1)
     
     print("\n" + "=" * 70)
