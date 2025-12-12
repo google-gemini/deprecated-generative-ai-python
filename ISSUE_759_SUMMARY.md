@@ -145,6 +145,8 @@ If you're building tools that integrate with Gemini API:
 
 1. **Validate Model Names**
    ```python
+   import requests
+
    def get_available_models(api_key):
        """Fetch current list of available models from API."""
        response = requests.get(
