@@ -74,11 +74,11 @@ def main():
             print("No models found with generateContent capability.")
             
     except Exception as e:
-        print(f"\nERROR: Failed to list models: {e}")
-        print("\nPossible causes:")
-        print("  - Invalid API key")
-        print("  - Network connectivity issues")
-        print("  - API service temporarily unavailable")
+        print(f"\nERROR: Failed to list models: {e}", file=sys.stderr)
+        print("\nPossible causes:", file=sys.stderr)
+        print("  - Invalid API key", file=sys.stderr)
+        print("  - Network connectivity issues", file=sys.stderr)
+        print("  - API service temporarily unavailable", file=sys.stderr)
         sys.exit(1)
     
     print("\n" + "=" * 70)
