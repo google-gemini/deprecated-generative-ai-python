@@ -244,6 +244,7 @@ class GenerativeModel:
         tools: content_types.FunctionLibraryType | None = None,
         tool_config: content_types.ToolConfigType | None = None,
         request_options: helper_types.RequestOptionsType | None = None,
+        extra_headers: dict[str, str] | None = None,
     ) -> generation_types.GenerateContentResponse:
         """A multipurpose function to generate responses from the model.
 
@@ -319,6 +320,14 @@ class GenerativeModel:
         if request_options is None:
             request_options = {}
 
+        # Convert `extra_headers` to metadata format
+        if extra_headers:
+            metadata = [(k, v) for k, v in extra_headers.items()]
+            if "metadata" in request_options:
+                request_options["metadata"].extend(metadata)
+            else:
+                request_options["metadata"] = metadata
+
         try:
             if stream:
                 with generation_types.rewrite_stream_error():
@@ -351,6 +360,7 @@ class GenerativeModel:
         tools: content_types.FunctionLibraryType | None = None,
         tool_config: content_types.ToolConfigType | None = None,
         request_options: helper_types.RequestOptionsType | None = None,
+        extra_headers: dict[str, str] | None = None,
     ) -> generation_types.AsyncGenerateContentResponse:
         """The async version of `GenerativeModel.generate_content`."""
         if not contents:
@@ -372,6 +382,15 @@ class GenerativeModel:
 
         if request_options is None:
             request_options = {}
+
+        # Convert extra_headers to metadata format if provided
+        metadata = []
+        if extra_headers:
+            metadata = [(k, v) for k, v in extra_headers.items()]
+
+        # Add metadata to request_options
+        if metadata:
+            request_options["metadata"] = metadata
 
         try:
             if stream:
