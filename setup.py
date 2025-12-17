@@ -39,7 +39,7 @@ version = get_version()
 release_status = "Development Status :: 7 - Inactive"
 
 dependencies = [
-    "google-ai-generativelanguage==0.6.15",
+    "google-ai-generativelanguage>=0.6.15",
     "google-api-core",
     "google-api-python-client",
     "google-auth>=2.15.0",  # 2.15 adds API key auth support
