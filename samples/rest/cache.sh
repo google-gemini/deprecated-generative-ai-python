@@ -15,8 +15,8 @@ echo '{
     {
       "parts":[
         {
-          "inline_data": {
-            "mime_type":"text/plain",
+          "inlineData": {
+            "mimeType":"text/plain",
             "data": "'$(base64 $B64FLAGS a11.txt)'"
           }
         }

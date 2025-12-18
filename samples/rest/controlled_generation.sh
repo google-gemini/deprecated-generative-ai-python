@@ -11,8 +11,8 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:g
         ]
     }],
     "generationConfig": {
-        "response_mime_type": "application/json",
-        "response_schema": {
+        "responseMimeType": "application/json",
+        "responseSchema": {
           "type": "ARRAY",
           "items": {
             "type": "OBJECT",
@@ -39,6 +39,6 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:g
         }
       ]
     }],
-    "generationConfig": { "response_mime_type": "application/json" }
+    "generationConfig": { "responseMimeType": "application/json" }
 }' 2> /dev/null | head
 # [END json_no_schema]

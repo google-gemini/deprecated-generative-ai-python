@@ -54,8 +54,8 @@ cat > "$TEMP_JSON" << EOF
     "parts":[
       {"text": "Tell me about this instrument"},
       {
-        "inline_data": {
-          "mime_type":"image/jpeg",
+        "inlineData": {
+          "mimeType":"image/jpeg",
           "data": "$(cat "$TEMP_B64")"
         }
       }
@@ -78,8 +78,8 @@ cat > "$TEMP_JSON" << EOF
     "parts":[
       {"text": "Tell me about this instrument"},
       {
-        "inline_data": {
-          "mime_type":"image/jpeg",
+        "inlineData": {
+          "mimeType":"image/jpeg",
           "data": "$(cat "$TEMP_B64")"
         }
       }
@@ -109,14 +109,14 @@ cat > "$TEMP_JSON" << EOF
     "contents": [{
         "parts":[
             {
-                "inline_data": {
-                    "mime_type": "image/jpeg",
+                "inlineData": {
+                    "mimeType": "image/jpeg",
                     "data": "$(cat "$TEMP_B64_1")"
                 }
             },
             {
-                "inline_data": {
-                    "mime_type": "image/jpeg",
+                "inlineData": {
+                    "mimeType": "image/jpeg",
                     "data": "$(cat "$TEMP_B64_2")"
                 }
             },
@@ -148,8 +148,8 @@ cat > "$TEMP_JSON" << EOF
     "contents": [{
         "parts":[
             {
-                "inline_data": {
-                    "mime_type": "image/jpeg",
+                "inlineData": {
+                    "mimeType": "image/jpeg",
                     "data": "$(cat "$TEMP_B64_2")"
                 }
             },
@@ -210,7 +210,7 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:g
       "contents": [{
         "parts":[
           {"text": "Please describe this file."},
-          {"file_data":{"mime_type": "audio/mpeg", "file_uri": '$file_uri'}}]
+          {"fileData":{"mimeType": "audio/mpeg", "fileUri": '$file_uri'}}]
         }]
        }' 2> /dev/null > response.json
 
@@ -260,7 +260,7 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:s
       "contents": [{
         "parts":[
           {"text": "Please describe this file."},
-          {"file_data":{"mime_type": "audio/mpeg", "file_uri": '$file_uri'}}]
+          {"fileData":{"mimeType": "audio/mpeg", "fileUri": '$file_uri'}}]
         }]
        }' 2> /dev/null > response.json
 
@@ -321,7 +321,7 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:g
       "contents": [{
         "parts":[
           {"text": "Transcribe the audio from this video, giving timestamps for salient events in the video. Also provide visual descriptions."},
-          {"file_data":{"mime_type": "video/mp4", "file_uri": '$file_uri'}}]
+          {"fileData":{"mimeType": "video/mp4", "fileUri": '$file_uri'}}]
         }]
        }' 2> /dev/null > response.json
 
@@ -381,7 +381,7 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:s
       "contents": [{
         "parts":[
           {"text": "Please describe this file."},
-          {"file_data":{"mime_type": "video/mp4", "file_uri": '$file_uri'}}]
+          {"fileData":{"mimeType": "video/mp4", "fileUri": '$file_uri'}}]
         }]
        }' 2> /dev/null > response.json
 
@@ -431,7 +431,7 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:g
       "contents": [{
         "parts":[
           {"text": "Can you add a few more lines to this poem?"},
-          {"file_data":{"mime_type": "application/pdf", "file_uri": '$file_uri'}}]
+          {"fileData":{"mimeType": "application/pdf", "fileUri": '$file_uri'}}]
         }]
        }' 2> /dev/null > response.json
 
@@ -483,7 +483,7 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:s
       "contents": [{
         "parts":[
           {"text": "Can you add a few more lines to this poem?"},
-          {"file_data":{"mime_type": "application/pdf", "file_uri": '$file_uri'}}]
+          {"fileData":{"mimeType": "application/pdf", "fileUri": '$file_uri'}}]
         }]
        }' 2> /dev/null > response.json
 
