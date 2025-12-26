@@ -22,7 +22,7 @@ class UnitTests(absltest.TestCase):
 
         text = "Hello World!"
         result = genai.embed_content(
-            model="models/text-embedding-004", content=text, output_dimensionality=10
+            model="text-embedding-004", content=text, output_dimensionality=10
         )
         print(result["embedding"])
         # [END embed_content]
@@ -37,7 +37,7 @@ class UnitTests(absltest.TestCase):
             "How does the brain work?",
         ]
         result = genai.embed_content(
-            model="models/text-embedding-004", content=texts, output_dimensionality=10
+            model="text-embedding-004", content=texts, output_dimensionality=10
         )
         print(result)
         # [END batch_embed_contents]

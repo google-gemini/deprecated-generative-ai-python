@@ -28,7 +28,7 @@ from google.generativeai.types import model_types
 from google.generativeai.types import text_types
 from google.generativeai.types import content_types
 
-DEFAULT_EMB_MODEL = "models/embedding-001"
+DEFAULT_EMB_MODEL = "embedding-001"
 EMBEDDING_MAX_BATCH_SIZE = 100
 
 EmbeddingTaskType = protos.TaskType
