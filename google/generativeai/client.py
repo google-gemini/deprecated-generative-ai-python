@@ -248,9 +248,13 @@ class _ClientManager:
             )
             raise e
 
+        return _add_metadata_wrapper(client)
+            
+
+    def _add_metadata_wrapper(self, client):
         if not self.default_metadata:
             return client
-
+        
         def keep(name, f):
             if name.startswith("_"):
                 return False
@@ -295,6 +299,7 @@ class _ClientManager:
         if client is None:
             model_client = self.get_default_client("Model")
             client = model_client._transport.operations_client
+            client = self._add_metadata_wrapper(client)
             self.clients["operations"] = client
         return client
 
