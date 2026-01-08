@@ -557,6 +557,7 @@ class UnitTests(parameterized.TestCase):
             protos.Schema(
                 type=protos.Type.OBJECT,
                 properties={"a": {"type_": protos.Type.INTEGER}},
+                required=["a"],
             ),
         ],
         [
@@ -566,6 +567,7 @@ class UnitTests(parameterized.TestCase):
                 type=protos.Type.OBJECT,
                 nullable=True,
                 properties={"a": {"type_": protos.Type.INTEGER}},
+                required=["a"],
             ),
         ],
         [
@@ -576,6 +578,7 @@ class UnitTests(parameterized.TestCase):
                 items=protos.Schema(
                     type=protos.Type.OBJECT,
                     properties={"a": {"type_": protos.Type.INTEGER}},
+                    required="a",
                 ),
             ),
         ],
@@ -585,6 +588,7 @@ class UnitTests(parameterized.TestCase):
             protos.Schema(
                 type=protos.Type.OBJECT,
                 properties={"a": {"type_": protos.Type.INTEGER, "nullable": True}},
+                required=["a"],
             ),
         ],
         [
@@ -593,6 +597,7 @@ class UnitTests(parameterized.TestCase):
             protos.Schema(
                 type=protos.Type.OBJECT,
                 properties={"a": {"type_": "ARRAY", "items": {"type_": "INTEGER"}}},
+                required=["a"],
             ),
         ],
         [
@@ -602,6 +607,7 @@ class UnitTests(parameterized.TestCase):
                 items=protos.Schema(
                     type=protos.Type.OBJECT,
                     properties={"a": {"type_": "ARRAY", "items": {"type_": "INTEGER"}}},
+                    required="a",
                 ),
                 type="ARRAY",
             ),
@@ -622,6 +628,7 @@ class UnitTests(parameterized.TestCase):
                 properties={
                     "a": {"type_": protos.Type.INTEGER},
                 },
+                required=["a"],
             ),
         ],
         [
@@ -635,8 +642,10 @@ class UnitTests(parameterized.TestCase):
                         properties={
                             "a": {"type_": protos.Type.INTEGER},
                         },
+                        required=["a"],
                     ),
                 },
+                required="x",
             ),
         ],
         ["enum", Choices, protos.Schema(type=protos.Type.STRING, enum=["a", "b", "c", "d"])],
@@ -656,6 +665,7 @@ class UnitTests(parameterized.TestCase):
                 properties={
                     "choice": protos.Schema(type=protos.Type.STRING, enum=["a", "b", "c", "d"])
                 },
+                required=["choice"],
             ),
         ],
     )

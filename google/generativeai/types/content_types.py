@@ -501,7 +501,6 @@ def strip_additional_properties(schema):
 def add_object_type(schema):
     properties = schema.get("properties", None)
     if properties is not None:
-        schema.pop("required", None)
         schema["type"] = "object"
         for name, value in properties.items():
             add_object_type(value)
