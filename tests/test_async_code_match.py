@@ -62,7 +62,7 @@ class CodeMatch(absltest.TestCase):
 
         return False
 
-    def _execute_code_match(self, source, asource):
+    def _execute_code_match(self, source, asource, fpath):
         asource = (
             asource.replace("anext", "next")
             .replace("aiter", "iter")
@@ -73,7 +73,7 @@ class CodeMatch(absltest.TestCase):
             .replace("ASYNC_", "")
         )
         asource = re.sub(" *?# type: ignore", "", asource)
-        self.assertEqual(source, asource)
+        self.assertEqual(source, asource, f"Matching {fpath}")
 
     def test_code_match_for_async_methods(self):
         for fpath in (pathlib.Path(__file__).parent.parent / "google").rglob("*.py"):
@@ -101,7 +101,7 @@ class CodeMatch(absltest.TestCase):
                         )
                         func_source = self._maybe_trim_docstring(snode)
                         func_asource = self._maybe_trim_docstring(anode)
-                        self._execute_code_match(func_source, func_asource)
+                        self._execute_code_match(func_source, func_asource, fpath)
                         # print(f"Matched {node.name}")
                     else:
                         code_match_funcs[node.name] = node
