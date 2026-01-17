@@ -8,13 +8,26 @@ on:
     paths:
     - "google/**"
     - "tests/**"
-    - "samples/**"
     - "pyproject.toml"
+    - "samples/*.py"
     - "setup.py"
-  # Allow manual runs
+  # Allow manual runs 
   workflow_dispatch:
 
 jobs:
+  test3_13:
+    name: Test Py3.13
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'
+    - name: Run tests
+      run: |
+        python --version
+        pip install .[dev]
+        python -m unittest
   test3_12:
     name: Test Py3.12
     runs-on: ubuntu-latest
